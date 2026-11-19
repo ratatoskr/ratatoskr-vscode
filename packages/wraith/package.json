@@ -1,0 +1,131 @@
+{
+  "name": "wraith",
+  "displayName": "Wraith",
+  "description": "Language support for Wraith files: tweaks, scripts, address lists and projects",
+  "version": "0.0.0",
+  "publisher": "ratatoskr",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ratatoskr/ratatoskr-vscode",
+    "directory": "packages/wraith"
+  },
+  "homepage": "https://docs.wraith.io/tools/vscode/",
+  "bugs": {
+    "url": "https://github.com/ratatoskr/ratatoskr-vscode/issues"
+  },
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets"
+  ],
+  "main": "./src/extension.js",
+  "activationEvents": [
+    "workspaceContains:**/*.rws.lua",
+    "workspaceContains:wraith.json"
+  ],
+  "keywords": [
+    "wraith",
+    "ratatoskr",
+    "reverse engineering",
+    "game modding"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "wraith.updateLuaTypes",
+        "title": "Update Lua types",
+        "category": "Wraith"
+      }
+    ],
+    "configuration": {
+      "title": "Wraith",
+      "properties": {
+        "wraith.luaTypes": {
+          "type": "boolean",
+          "default": true,
+          "description": "Keep LuaLS types for Lua plugins and .rws.lua scripts in .wraith/types, from `wraith sdk lua types`, matching the installed Wraith."
+        },
+        "wraith.path": {
+          "type": "string",
+          "default": "",
+          "scope": "machine-overridable",
+          "description": "wraith.exe, or its folder. Empty looks in WRAITH, the Wraith app's install, then PATH."
+        }
+      }
+    },
+    "jsonValidation": [
+      {
+        "fileMatch": "wraith.json",
+        "url": "https://hub.wraith.io/schema/v1/wraith.json"
+      }
+    ],
+    "languages": [
+      {
+        "id": "wraith-tweak",
+        "aliases": [
+          "Wraith Tweak",
+          "rwt"
+        ],
+        "extensions": [
+          ".rwt"
+        ],
+        "configuration": "./languages/rwt/language-configuration.json"
+      },
+      {
+        "id": "javascript",
+        "extensions": [
+          ".rws.js"
+        ]
+      },
+      {
+        "id": "lua",
+        "extensions": [
+          ".rws.lua"
+        ]
+      },
+      {
+        "id": "zig",
+        "extensions": [
+          ".rwa.zon",
+          ".rwp.zon"
+        ]
+      }
+    ],
+    "grammars": [
+      {
+        "language": "wraith-tweak",
+        "scopeName": "source.rwt",
+        "path": "./languages/rwt/rwt.tmLanguage.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.javascript": "javascript",
+          "meta.embedded.line.javascript": "javascript",
+          "meta.embedded.block.lua": "lua",
+          "meta.embedded.block.sal": "salamander"
+        }
+      },
+      {
+        "scopeName": "source.sal.wraith",
+        "path": "./languages/wraith-sal/sig.tmLanguage.json",
+        "injectTo": [
+          "source.sal"
+        ]
+      }
+    ],
+    "snippets": [
+      {
+        "language": "wraith-tweak",
+        "path": "./languages/rwt/snippets.json"
+      }
+    ]
+  },
+  "scripts": {
+    "test": "node --test test/wraith.test.js",
+    "package": "vsce package --no-dependencies --out wraith.vsix"
+  },
+  "extensionDependencies": [
+    "ratatoskr.salamander-schemas"
+  ]
+}

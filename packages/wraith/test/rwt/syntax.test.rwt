@@ -1,0 +1,160 @@
+// SYNTAX TEST "source.rwt" "rwt tweaks"
+
+@group "Combat"
+// <- punctuation.definition.section.rwt
+//^^^^ keyword.control.section.rwt
+//     ^^^^^^^^ string.other.title.rwt
+
+@tweak "Character XP"
+// <- punctuation.definition.section.rwt
+//^^^^ keyword.control.section.rwt
+//     ^^^^^^^^^^^^^^ string.other.title.rwt
+@key Ctrl+F8
+//   ^^^^^^^ constant.other.key.rwt
+@mode sometimes
+//    ^^^^^^^^^ invalid.illegal.mode.rwt
+
+@data near game.exe
+//^^^ keyword.control.section.rwt
+//    ^^^^ keyword.other.near.rwt
+//         ^^^^^^^^ entity.name.module.rwt
+  [Label("Times"), Min(1), Toggle, Key(Ctrl+F8), Size(4)] u32 times = 0x10;
+//^ punctuation.definition.attribute.begin.rwt
+// ^^^^^ entity.other.attribute-name.rwt
+//                         ^^^^^^ entity.other.attribute-name.rwt
+//                                     ^^^^^^^ constant.other.key.rwt
+//                                               ^^^^ invalid.illegal.unknown-attribute.rwt
+//                                                        ^^^ support.type.primitive.rwt
+//                                                            ^^^^^ variable.other.member.rwt
+//                                                                    ^^^^ constant.numeric.rwt
+  [Choices(items)] u16 item // which
+//         ^^^^^ entity.name.function.rwt
+//                          ^^ comment.line.double-slash.rwt
+  u24 bad
+//^^^ invalid.illegal.unknown-type.rwt
+
+@sym player = [game.exe+0x10] + 8
+//   ^^^^^^ variable.other.constant.rwt
+//            ^ keyword.operator.dereference.rwt
+//             ^^^^^^^^ entity.name.module.rwt
+//                      ^^^^ constant.numeric.rwt
+@sym hp = player + 10h
+//                 ^^^ constant.numeric.rwt
+
+@inject sig("48 8B ?? E8", Offset(-5), Rip) // hook it
+//      ^^^ support.function.sig.rwt
+//           ^^ constant.numeric.hex.rwt
+//                 ^^ constant.character.wildcard.rwt
+//                         ^^^^^^ support.function.step.rwt
+//                                     ^^^ support.constant.step.rwt
+//                                          ^^ comment.line.double-slash.rwt
+top: mov eax, [rax+0x98]; add eax, 1
+// <--- entity.name.label.rwt
+//   ^^^ keyword.other.mnemonic.rwt
+//       ^^^ variable.language.register.rwt
+//                 ^^^^ constant.numeric.rwt
+//                      ^ punctuation.separator.statement.rwt
+//                        ^^^ keyword.other.mnemonic.rwt
+  imul eax, dword ptr [times]
+//^^^^ keyword.other.mnemonic.rwt
+//          ^^^^^ storage.type.size.rwt
+//                     ^^^^^ variable.other.rwt
+  jmp resume
+//    ^^^^^^ variable.language.special.rwt
+  mov ah, 0FFh; db x"12 21 FF", 10h
+//    ^^ variable.language.register.rwt
+//        ^^^^ constant.numeric.rwt
+//                 ^^ punctuation.definition.string.begin.rwt
+//                   ^^ constant.numeric.hex.rwt
+//                         ^^ constant.numeric.hex.rwt
+//                              ^^^ constant.numeric.rwt
+  db x"1221FF", FFh
+//     ^^ constant.numeric.hex.rwt
+//         ^^ constant.numeric.hex.rwt
+//              ^^^ variable.other.rwt
+
+@patch game.exe+0x10 (8) expect "29 D0"
+//                    ^ constant.numeric.rwt
+//                       ^^^^^^ keyword.other.expect.rwt
+  nop 2
+
+@bytes 0x10
+  90 C3 9
+//^^ constant.numeric.hex.rwt
+//      ^ invalid.illegal.byte.rwt
+  x"90C3"
+//  ^^ constant.numeric.hex.rwt
+//    ^^ constant.numeric.hex.rwt
+
+@patch 0x10
+  @js
+//^ punctuation.definition.section.rwt
+// ^^ keyword.control.section.rwt
+  cpu.rax = 1
+
+@inject 0x10
+  @asm
+// ^^^ keyword.control.section.rwt
+  nop
+//^^^ keyword.other.mnemonic.rwt
+
+@hook game.exe+0x10 as i32 (i32 a)
+//                  ^^ keyword.other.as.rwt
+//                     ^^^ support.type.primitive.sal
+  return original(a)
+
+@patch 0x10
+  @lua
+//^ punctuation.definition.section.rwt
+// ^^^ keyword.control.section.rwt
+  cpu.rax = 1
+//^^^^^^^^^^^ meta.embedded.block.lua
+
+@hook game.exe+0x10 as i32 (i32 a)
+  @lua
+// ^^^ keyword.control.section.rwt
+  return original(a)
+//^^^^^^^^^^^^^^^^^^ meta.embedded.block.lua
+
+@group "Party"
+// <- punctuation.definition.section.rwt
+//^^^^ keyword.control.section.rwt
+//     ^^^^^^^ string.other.title.rwt
+@children on off
+//^^^^^^^ keyword.control.section.rwt
+//        ^^ constant.language.children.rwt
+//           ^^^ constant.language.children.rwt
+@children sometimes
+//        ^^^^^^^^^ invalid.illegal.children.rwt
+@use ce // the CE layer
+// <- punctuation.definition.section.rwt
+//^^ keyword.control.section.rwt
+//   ^^ entity.name.namespace.library.rwt
+//      ^^^^^^^^^^^^^^^ comment.line.double-slash.rwt
+@globals shared // like CE
+// <- punctuation.definition.section.rwt
+//^^^^^^ keyword.control.section.rwt
+//       ^^^^^^ constant.language.globals.rwt
+//              ^^^^^^^^^^ comment.line.double-slash.rwt
+@globals local
+//       ^^^^^ invalid.illegal.globals.rwt
+@end // Party
+// <- punctuation.definition.section.rwt
+//^^ keyword.control.section.rwt
+//   ^^ comment.line.double-slash.rwt
+
+@schema
+struct Vec { f32 x; }
+// <------ storage.type.struct.sal
+
+@nope
+//^^^ invalid.illegal.unknown-section.rwt
+
+@js
+function tick() {}
+
+@lua
+// <- punctuation.definition.section.rwt
+//^^ keyword.control.section.rwt
+function tick() end
+// <---------- meta.embedded.block.lua

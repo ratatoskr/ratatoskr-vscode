@@ -1,0 +1,617 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Salamander",
+  "scopeName": "source.sal",
+  "fileTypes": [
+    "sal"
+  ],
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#attributes"
+    },
+    {
+      "include": "#use"
+    },
+    {
+      "include": "#enum"
+    },
+    {
+      "include": "#trait"
+    },
+    {
+      "include": "#impl"
+    },
+    {
+      "include": "#type-declaration"
+    },
+    {
+      "include": "#const"
+    },
+    {
+      "include": "#impl-item"
+    },
+    {
+      "include": "#modifiers"
+    },
+    {
+      "include": "#method"
+    },
+    {
+      "include": "#field"
+    },
+    {
+      "include": "#primitive"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#punctuation"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.sal",
+          "begin": "//",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.sal"
+            }
+          },
+          "end": "$"
+        },
+        {
+          "name": "comment.block.sal",
+          "begin": "/\\*",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.begin.sal"
+            }
+          },
+          "end": "\\*/",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.end.sal"
+            }
+          }
+        }
+      ]
+    },
+    "attributes": {
+      "comment": "[...] before a declaration. A [ right after a type is an array length, and [] in front of one is a slice.",
+      "name": "meta.attribute.sal",
+      "begin": "(?<![\\w*\\]?])\\[(?!\\s*\\])",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.attribute.begin.sal"
+        }
+      },
+      "end": "\\]",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.attribute.end.sal"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "match": "\\b(?:Offset|Size|Virtual|Bit|X64|X86)\\b",
+          "name": "entity.other.attribute-name.sal"
+        },
+        {
+          "match": "\\b(?:Cdecl|Stdcall|Thiscall|Fastcall|Winapi)\\b",
+          "name": "entity.other.attribute-name.convention.sal"
+        },
+        {
+          "comment": "A tool's, like game.Note",
+          "match": "\\b([A-Za-z_]\\w*)(\\.)([A-Za-z_]\\w*)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.name.namespace.sal"
+            },
+            "2": {
+              "name": "punctuation.accessor.sal"
+            },
+            "3": {
+              "name": "entity.other.attribute-name.sal"
+            }
+          }
+        },
+        {
+          "match": "\\b[A-Za-z_]\\w*\\b",
+          "name": "entity.other.attribute-name.sal"
+        },
+        {
+          "include": "#strings"
+        },
+        {
+          "include": "#numbers"
+        },
+        {
+          "include": "#punctuation"
+        }
+      ]
+    },
+    "use": {
+      "match": "\\b(use)\\s+([A-Za-z_]\\w*)",
+      "captures": {
+        "1": {
+          "name": "keyword.control.import.sal"
+        },
+        "2": {
+          "name": "entity.name.namespace.sal"
+        }
+      }
+    },
+    "enum": {
+      "comment": "enum Name : u8 { ... } and error Name { ... }",
+      "begin": "\\b(enum|error)\\s+([A-Za-z_]\\w*)",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.type.$1.sal"
+        },
+        "2": {
+          "name": "entity.name.type.$1.sal"
+        }
+      },
+      "end": "(?<=\\})",
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#primitive"
+        },
+        {
+          "begin": "\\{",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.block.begin.sal"
+            }
+          },
+          "end": "\\}",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.block.end.sal"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#comments"
+            },
+            {
+              "include": "#numbers"
+            },
+            {
+              "match": "\\b[A-Za-z_]\\w*\\b",
+              "name": "variable.other.enummember.sal"
+            },
+            {
+              "include": "#punctuation"
+            }
+          ]
+        },
+        {
+          "include": "#punctuation"
+        }
+      ]
+    },
+    "trait": {
+      "match": "\\b(trait)\\s+([A-Za-z_]\\w*)(?:\\s*(:)\\s*([A-Za-z_]\\w*(?:\\s*,\\s*[A-Za-z_]\\w*)*))?",
+      "captures": {
+        "1": {
+          "name": "storage.type.trait.sal"
+        },
+        "2": {
+          "name": "entity.name.type.trait.sal"
+        },
+        "3": {
+          "name": "punctuation.separator.colon.sal"
+        },
+        "4": {
+          "patterns": [
+            {
+              "match": "[A-Za-z_]\\w*",
+              "name": "entity.other.inherited-class.sal"
+            },
+            {
+              "match": ",",
+              "name": "punctuation.separator.comma.sal"
+            }
+          ]
+        }
+      }
+    },
+    "impl": {
+      "match": "\\b(impl)\\s+([A-Za-z_]\\w*)\\s+(for)\\s+([A-Za-z_]\\w*)",
+      "captures": {
+        "1": {
+          "name": "storage.type.impl.sal"
+        },
+        "2": {
+          "name": "entity.name.type.trait.sal"
+        },
+        "3": {
+          "name": "keyword.other.for.sal"
+        },
+        "4": {
+          "name": "entity.name.type.sal"
+        }
+      }
+    },
+    "type-declaration": {
+      "match": "\\b(struct|union|bitfield|opaque)\\s+([A-Za-z_]\\w*)(?:\\s*(:)\\s*([A-Za-z_]\\w*))?",
+      "captures": {
+        "1": {
+          "name": "storage.type.$1.sal"
+        },
+        "2": {
+          "name": "entity.name.type.$1.sal"
+        },
+        "3": {
+          "name": "punctuation.separator.colon.sal"
+        },
+        "4": {
+          "patterns": [
+            {
+              "include": "#primitive"
+            },
+            {
+              "match": ".+",
+              "name": "entity.other.inherited-class.sal"
+            }
+          ]
+        }
+      }
+    },
+    "const": {
+      "match": "\\b(const)\\s+((?:\\?|\\[\\s*\\]\\s*)*)\\b([A-Za-z_]\\w*)((?:\\s*(?:\\*|\\[\\s*[^\\]\\s]*\\s*\\]))*)(?:\\s*(!)\\s*([A-Za-z_]\\w*))?\\s+([A-Za-z_]\\w*)",
+      "captures": {
+        "1": {
+          "name": "storage.modifier.const.sal"
+        },
+        "2": {
+          "patterns": [
+            {
+              "match": "\\?",
+              "name": "keyword.operator.optional.sal"
+            },
+            {
+              "match": "[\\[\\]]",
+              "name": "punctuation.definition.slice.sal"
+            }
+          ]
+        },
+        "3": {
+          "patterns": [
+            {
+              "include": "#primitive"
+            },
+            {
+              "match": ".+",
+              "name": "entity.name.type.sal"
+            }
+          ]
+        },
+        "4": {
+          "patterns": [
+            {
+              "match": "\\*",
+              "name": "keyword.operator.pointer.sal"
+            },
+            {
+              "match": "[\\[\\]]",
+              "name": "punctuation.definition.array.sal"
+            },
+            {
+              "include": "#numbers"
+            }
+          ]
+        },
+        "5": {
+          "name": "keyword.operator.error-union.sal"
+        },
+        "6": {
+          "name": "entity.name.type.error.sal"
+        },
+        "7": {
+          "name": "variable.other.constant.sal"
+        }
+      }
+    },
+    "impl-item": {
+      "comment": "In an impl, `health = field health;` or `hp = fn health;`",
+      "match": "\\b([A-Za-z_]\\w*)\\s*(=)\\s*(field|fn)\\s+([A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*)",
+      "captures": {
+        "1": {
+          "name": "entity.name.function.sal"
+        },
+        "2": {
+          "name": "keyword.operator.assignment.sal"
+        },
+        "3": {
+          "name": "keyword.other.$3.sal"
+        },
+        "4": {
+          "name": "variable.other.member.sal"
+        }
+      }
+    },
+    "modifiers": {
+      "match": "\\b(?:static|async|keep|inout)\\b",
+      "name": "storage.modifier.sal"
+    },
+    "field": {
+      "comment": "A type then a name, like `u32 id;`, `Player*[4] party;`, `?Damageable owner;`, a bitfield's `Job job : 4;` or a field with its own bits, `u8 flags { ... }`.",
+      "match": "((?:\\?|\\[\\s*\\]\\s*)*)\\b([A-Za-z_]\\w*)((?:\\s*(?:\\*|\\[\\s*[^\\]\\s]*\\s*\\]))*)(?:\\s*(!)\\s*([A-Za-z_]\\w*))?(?:\\s+|(?<=[*\\]])\\s*)([A-Za-z_]\\w*)\\s*(?=[;:{])",
+      "captures": {
+        "1": {
+          "patterns": [
+            {
+              "match": "\\?",
+              "name": "keyword.operator.optional.sal"
+            },
+            {
+              "match": "[\\[\\]]",
+              "name": "punctuation.definition.slice.sal"
+            }
+          ]
+        },
+        "2": {
+          "patterns": [
+            {
+              "include": "#primitive"
+            },
+            {
+              "match": ".+",
+              "name": "entity.name.type.sal"
+            }
+          ]
+        },
+        "3": {
+          "patterns": [
+            {
+              "match": "\\*",
+              "name": "keyword.operator.pointer.sal"
+            },
+            {
+              "match": "[\\[\\]]",
+              "name": "punctuation.definition.array.sal"
+            },
+            {
+              "include": "#numbers"
+            }
+          ]
+        },
+        "4": {
+          "name": "keyword.operator.error-union.sal"
+        },
+        "5": {
+          "name": "entity.name.type.error.sal"
+        },
+        "6": {
+          "name": "variable.other.member.sal"
+        }
+      }
+    },
+    "method": {
+      "comment": "A method or function, like `bool attack(Player* target, f32 amount);`, or a named fn type, `fn bool Visitor(u32 n);`.",
+      "begin": "(?:\\b(fn)\\s+)?((?:\\?|\\[\\s*\\]\\s*)*)\\b([A-Za-z_]\\w*)((?:\\s*(?:\\*|\\[\\s*[^\\]\\s]*\\s*\\]))*)(?:\\s*(!)\\s*([A-Za-z_]\\w*))?(?:\\s+|(?<=[*\\]])\\s*)([A-Za-z_]\\w*)\\s*(\\()",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.type.function.sal"
+        },
+        "8": {
+          "name": "punctuation.definition.parameters.begin.sal"
+        },
+        "2": {
+          "patterns": [
+            {
+              "match": "\\?",
+              "name": "keyword.operator.optional.sal"
+            },
+            {
+              "match": "[\\[\\]]",
+              "name": "punctuation.definition.slice.sal"
+            }
+          ]
+        },
+        "3": {
+          "patterns": [
+            {
+              "include": "#primitive"
+            },
+            {
+              "match": ".+",
+              "name": "entity.name.type.sal"
+            }
+          ]
+        },
+        "4": {
+          "patterns": [
+            {
+              "match": "\\*",
+              "name": "keyword.operator.pointer.sal"
+            },
+            {
+              "match": "[\\[\\]]",
+              "name": "punctuation.definition.array.sal"
+            },
+            {
+              "include": "#numbers"
+            }
+          ]
+        },
+        "5": {
+          "name": "keyword.operator.error-union.sal"
+        },
+        "6": {
+          "name": "entity.name.type.error.sal"
+        },
+        "7": {
+          "name": "entity.name.function.sal"
+        }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.parameters.end.sal"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#modifiers"
+        },
+        {
+          "match": "\\b(fn)\\b",
+          "name": "storage.type.function.sal"
+        },
+        {
+          "match": "((?:\\?|\\[\\s*\\]\\s*)*)\\b([A-Za-z_]\\w*)((?:\\s*(?:\\*|\\[\\s*[^\\]\\s]*\\s*\\]))*)(?:\\s*(!)\\s*([A-Za-z_]\\w*))?(?:(?:\\s+|(?<=[*\\]])\\s*)([A-Za-z_]\\w*))?\\s*(?=[,)])",
+          "captures": {
+            "1": {
+              "patterns": [
+                {
+                  "match": "\\?",
+                  "name": "keyword.operator.optional.sal"
+                },
+                {
+                  "match": "[\\[\\]]",
+                  "name": "punctuation.definition.slice.sal"
+                }
+              ]
+            },
+            "2": {
+              "patterns": [
+                {
+                  "include": "#primitive"
+                },
+                {
+                  "match": ".+",
+                  "name": "entity.name.type.sal"
+                }
+              ]
+            },
+            "3": {
+              "patterns": [
+                {
+                  "match": "\\*",
+                  "name": "keyword.operator.pointer.sal"
+                },
+                {
+                  "match": "[\\[\\]]",
+                  "name": "punctuation.definition.array.sal"
+                },
+                {
+                  "include": "#numbers"
+                }
+              ]
+            },
+            "4": {
+              "name": "keyword.operator.error-union.sal"
+            },
+            "5": {
+              "name": "entity.name.type.error.sal"
+            },
+            "6": {
+              "name": "variable.parameter.sal"
+            }
+          }
+        },
+        {
+          "include": "#punctuation"
+        }
+      ]
+    },
+    "primitive": {
+      "match": "\\b(?:u8|u16|u32|u64|i8|i16|i32|i64|f32|f64|bool|usize|isize|utf8|utf16|string|cstring|object|blob|void)\\b",
+      "name": "support.type.primitive.sal"
+    },
+    "numbers": {
+      "match": "-?\\b(?:0[xX][0-9A-Fa-f_]+|0[bB][01_]+|0[oO][0-7_]+|\\d[\\d_]*(?:\\.\\d+)?)\\b",
+      "name": "constant.numeric.sal"
+    },
+    "strings": {
+      "name": "string.quoted.double.sal",
+      "begin": "\"",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.sal"
+        }
+      },
+      "end": "\"|$",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.sal"
+        }
+      },
+      "patterns": [
+        {
+          "match": "\\\\.",
+          "name": "constant.character.escape.sal"
+        }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        {
+          "match": "\\b(?:true|false)\\b",
+          "name": "constant.language.sal"
+        },
+        {
+          "match": ";",
+          "name": "punctuation.terminator.sal"
+        },
+        {
+          "match": ",",
+          "name": "punctuation.separator.comma.sal"
+        },
+        {
+          "match": ":",
+          "name": "punctuation.separator.colon.sal"
+        },
+        {
+          "match": "=",
+          "name": "keyword.operator.assignment.sal"
+        },
+        {
+          "match": "\\{",
+          "name": "punctuation.definition.block.begin.sal"
+        },
+        {
+          "match": "\\}",
+          "name": "punctuation.definition.block.end.sal"
+        },
+        {
+          "match": "\\(",
+          "name": "punctuation.definition.parameters.begin.sal"
+        },
+        {
+          "match": "\\)",
+          "name": "punctuation.definition.parameters.end.sal"
+        },
+        {
+          "match": "\\?",
+          "name": "keyword.operator.optional.sal"
+        },
+        {
+          "match": "!",
+          "name": "keyword.operator.error-union.sal"
+        }
+      ]
+    }
+  }
+}

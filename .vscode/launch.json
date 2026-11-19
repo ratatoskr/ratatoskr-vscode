@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Salamander",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/packages/salamander"
+      ]
+    },
+    {
+      "name": "Run Wraith",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/packages/salamander",
+        "--extensionDevelopmentPath=${workspaceFolder}/packages/wraith"
+      ]
+    }
+  ]
+}

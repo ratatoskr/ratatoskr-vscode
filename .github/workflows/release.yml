@@ -1,0 +1,104 @@
+name: release
+
+# Run it by hand from the Actions tab with the extension and the version to release (like 0.1.0, no
+# "v"). It sets that package's version, tests, packages and publishes it to the VS Code Marketplace,
+# then commits and tags `<extension>-v<version>`. Only the tag is pushed, so main stays at 0.0.0.
+# Wraith needs Salamander, so release Salamander first.
+#
+# Publishing uses OIDC, no token: the `ratatoskr` publisher's Trusted Publishing page on the
+# Marketplace has a policy for this repo and release.yml.
+# Marketplace versions have no suffix like -alpha, so pre-releases are a checkbox instead.
+
+on:
+  workflow_dispatch:
+    inputs:
+      extension:
+        description: Extension to release
+        required: true
+        type: choice
+        options: [ salamander, wraith ]
+      version:
+        description: Version to release, like 0.1.0 (no "v")
+        required: true
+        type: string
+      pre_release:
+        description: Publish as a pre-release
+        type: boolean
+        default: false
+
+# Pushes the release tag and gets the OIDC token
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: release ${{ inputs.extension }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.ref == 'refs/heads/main'
+    env:
+      EXTENSION: ${{ inputs.extension }}
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v7
+
+      - name: check the version
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          if ! [[ $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::$VERSION isn't a version like 1.2.3"
+            exit 1
+          fi
+          if [ "$VERSION" = 0.0.0 ]; then
+            echo "::error::0.0.0 is main's version, not a release"
+            exit 1
+          fi
+          if git ls-remote --exit-code --tags origin "refs/tags/$EXTENSION-v$VERSION" > /dev/null; then
+            echo "::error::$EXTENSION-v$VERSION is already tagged"
+            exit 1
+          fi
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: install node
+        uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: install packages
+        run: npm ci
+
+      - name: set the version
+        run: npm version "$VERSION" --no-git-tag-version --workspace "packages/$EXTENSION"
+
+      - name: test
+        run: npm test
+
+      - name: package
+        working-directory: packages/${{ inputs.extension }}
+        run: npx vsce package --no-dependencies ${{ inputs.pre_release && '--pre-release' || '' }} --out "$EXTENSION-$VERSION.vsix"
+
+      # The file that was packaged and tested, so that's what ships. It says if it's a pre-release
+      - name: publish to the VS Code Marketplace
+        working-directory: packages/${{ inputs.extension }}
+        run: npx vsce publish --oidc --packagePath "$EXTENSION-$VERSION.vsix"
+
+      - name: upload the extension
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.extension }}-${{ inputs.version }}-vsix
+          path: packages/${{ inputs.extension }}/${{ inputs.extension }}-${{ inputs.version }}.vsix
+
+      - name: commit and tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "release $EXTENSION v$VERSION"
+          git tag -a "$EXTENSION-v$VERSION" -m "$EXTENSION v$VERSION"
+          git push origin "$EXTENSION-v$VERSION"

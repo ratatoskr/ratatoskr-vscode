@@ -1,0 +1,187 @@
+{
+  "group": {
+    "prefix": "group",
+    "description": "A group of two tweaks, sharing the data and script above them",
+    "body": [
+      "@group \"${1:Combat}\"",
+      "",
+      "@data",
+      "\t${2:u32} ${3:multiplier} = ${4:2}",
+      "",
+      "@js",
+      "function ${5:helper}() {",
+      "\t$6",
+      "}",
+      "",
+      "@tweak \"${7:First}\"",
+      "@js",
+      "$8",
+      "",
+      "@tweak \"${9:Second}\"",
+      "@js",
+      "$0"
+    ]
+  },
+  "@group": {
+    "prefix": "@group",
+    "description": "Names the file's group at the top, or past it opens a nested one that runs to its @end",
+    "body": [
+      "@group \"${1:Name}\"$0"
+    ]
+  },
+  "subgroup": {
+    "prefix": "subgroup",
+    "description": "A group in a group, with a shared part and a box of its own, up to its @end",
+    "body": [
+      "@group \"${1:Party}\"",
+      "@children ${2|on off,on,off,none|}",
+      "",
+      "@js",
+      "function ${3:helper}() {",
+      "\t$4",
+      "}",
+      "",
+      "@tweak \"${5:Max HP}\"",
+      "@js",
+      "$0",
+      "",
+      "@end"
+    ]
+  },
+  "@use": {
+    "prefix": "@use",
+    "description": "In a group's shared part or a lone tweak, before its code: loads a script library, like the Cheat Engine layer ce",
+    "body": [
+      "@use ${1:ce}$0"
+    ]
+  },
+  "@children": {
+    "prefix": "@children",
+    "description": "Right after a @group: what its box does to what's in it",
+    "body": [
+      "@children ${1|on off,on,off,none|}$0"
+    ]
+  },
+  "@globals": {
+    "prefix": "@globals",
+    "description": "In a group's shared part, before its code: plain global writes from anything in the group land in its top level, where they all see them",
+    "body": [
+      "@globals shared$0"
+    ]
+  },
+  "tweak": {
+    "prefix": "tweak",
+    "description": "A tweak with a name, a key and some data",
+    "body": [
+      "@tweak \"${1:Name}\"",
+      "@key ${2:F8}",
+      "",
+      "@data",
+      "\t[Label(\"${3:Multiplier}\"), Min(${4:1}), Max(${5:100})] ${6:u32} ${7:multiplier} = ${8:2}",
+      "$0"
+    ]
+  },
+  "inject": {
+    "prefix": "inject",
+    "description": "Asm before the instruction there, which still runs after it",
+    "body": [
+      "@inject sig(\"${1:48 8B ?? ??}\")",
+      "\t${2:nop}",
+      "$0"
+    ]
+  },
+  "patch": {
+    "prefix": "patch",
+    "description": "Asm that replaces the code there, what expect matches",
+    "body": [
+      "@patch ${1:game.exe+0x1234} expect \"${2:29 D0}\"",
+      "\t${3:nop}",
+      "$0"
+    ]
+  },
+  "bytes": {
+    "prefix": "bytes",
+    "description": "Bytes over the code there",
+    "body": [
+      "@bytes ${1:game.exe+0x1234}",
+      "\t${2:90 90}",
+      "$0"
+    ]
+  },
+  "sym": {
+    "prefix": "sym",
+    "description": "A named address",
+    "body": [
+      "@sym ${1:name} = sig(\"${2:48 8B 0D ?? ?? ?? ??}\", Rip)$0"
+    ]
+  },
+  "toggle": {
+    "prefix": "toggle",
+    "description": "A checkbox field with a key",
+    "body": [
+      "[Label(\"${1:One hit kill}\"), Toggle, Key(${2:F8})] u32 ${3:one_hit_kill}$0"
+    ]
+  },
+  "choices": {
+    "prefix": "choices",
+    "description": "A field picked from a list your script makes",
+    "body": [
+      "[Label(\"${1:Item}\"), Choices(${2:items})] u32 ${3:item}$0"
+    ]
+  },
+  "hook": {
+    "prefix": "hook",
+    "description": "Script in place of a function, which can call the original",
+    "body": [
+      "@hook ${1:sig(\"40 53 48 83 EC 20\")} as ${2:i32} (${3:i32 damage})",
+      "\treturn original(${4:damage});$0"
+    ]
+  },
+  "luahook": {
+    "prefix": "luahook",
+    "description": "Lua in place of a function, which can call the original",
+    "body": [
+      "@hook ${1:sig(\"40 53 48 83 EC 20\")} as ${2:i32} (${3:i32 damage})",
+      "\t@lua",
+      "\treturn original(${4:damage})$0"
+    ]
+  },
+  "jspatch": {
+    "prefix": "jspatch",
+    "description": "JS in place of the code there, with cpu, original() and resume()",
+    "body": [
+      "@patch ${1:game.exe+0x1234} expect \"${2:3B C8}\"",
+      "\t@js",
+      "\t${3:cpu.rax = 0;}$0"
+    ]
+  },
+  "luapatch": {
+    "prefix": "luapatch",
+    "description": "Lua in place of the code there, with cpu, original() and resume()",
+    "body": [
+      "@patch ${1:game.exe+0x1234} expect \"${2:3B C8}\"",
+      "\t@lua",
+      "\t${3:cpu.rax = 0}$0"
+    ]
+  },
+  "js": {
+    "prefix": "js",
+    "description": "JS that runs when it's turned on",
+    "body": [
+      "@js",
+      "function tick() {",
+      "\t$0",
+      "}"
+    ]
+  },
+  "lua": {
+    "prefix": "lua",
+    "description": "Lua that runs when it's turned on",
+    "body": [
+      "@lua",
+      "function tick()",
+      "\t$0",
+      "end"
+    ]
+  }
+}

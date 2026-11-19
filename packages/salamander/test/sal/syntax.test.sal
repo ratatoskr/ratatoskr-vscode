@@ -1,0 +1,107 @@
+// SYNTAX TEST "source.sal" "sal schemas"
+
+// A comment
+// <-- comment.line.double-slash.sal
+
+use game;
+// <--- keyword.control.import.sal
+//  ^^^^ entity.name.namespace.sal
+
+/* block */ struct Vec3 { f32 x; f32 y; f32 z; }
+// <----------- comment.block.sal
+//          ^^^^^^ storage.type.struct.sal
+//                 ^^^^ entity.name.type.struct.sal
+//                        ^^^ support.type.primitive.sal
+//                            ^ variable.other.member.sal
+
+[Size(0x100), game.Note("hi")]
+// <- punctuation.definition.attribute.begin.sal
+//^^^ meta.attribute.sal entity.other.attribute-name.sal
+//    ^^^^^ constant.numeric.sal
+//            ^^^^ entity.name.namespace.sal
+//                 ^^^^ entity.other.attribute-name.sal
+struct Player : Entity {
+//     ^^^^^^ entity.name.type.struct.sal
+//              ^^^^^^ entity.other.inherited-class.sal
+    [0x20] utf8[16] name;
+//   ^^^^ meta.attribute.sal constant.numeric.sal
+//         ^^^^ support.type.primitive.sal
+//             ^ punctuation.definition.array.sal
+//                  ^^^^ variable.other.member.sal
+    [0x50] Player*[4] party;
+//         ^^^^^^ entity.name.type.sal
+//               ^ keyword.operator.pointer.sal
+//                 ^ - meta.attribute.sal
+//                    ^^^^^ variable.other.member.sal
+    ?Damageable owner;
+//  ^ keyword.operator.optional.sal
+//   ^^^^^^^^^^ entity.name.type.sal
+//              ^^^^^ variable.other.member.sal
+    [0x78] u8 relation { bool party; [Bit(6)] bool drawn; }
+//         ^^ support.type.primitive.sal
+//            ^^^^^^^^ variable.other.member.sal
+//                                    ^^^ entity.other.attribute-name.sal
+    [Virtual(2), Thiscall] u32 attack(u32 times);
+//   ^^^^^^^ entity.other.attribute-name.sal
+//               ^^^^^^^^ entity.other.attribute-name.convention.sal
+//                             ^^^^^^ entity.name.function.sal
+//                                        ^^^^^ variable.parameter.sal
+    static Player* main;
+//  ^^^^^^ storage.modifier.sal
+//         ^^^^^^ entity.name.type.sal
+//                 ^^^^ variable.other.member.sal
+}
+
+enum Job : u8 { warrior = 1, mage, thief = -2 }
+// <---- storage.type.enum.sal
+//   ^^^ entity.name.type.enum.sal
+//         ^^ support.type.primitive.sal
+//              ^^^^^^^ variable.other.enummember.sal
+//                                         ^^ constant.numeric.sal
+
+error LoadError { NotFound, Corrupt = 7 }
+// <----- storage.type.error.sal
+//    ^^^^^^^^^ entity.name.type.error.sal
+//                ^^^^^^^^ variable.other.enummember.sal
+
+opaque Handle;
+// <------ storage.type.opaque.sal
+
+fn bool Visitor(u32 n);
+// <-- storage.type.function.sal
+// ^^^^ support.type.primitive.sal
+//      ^^^^^^^ entity.name.function.sal
+
+const f32 gravity = -9.8;
+// <----- storage.modifier.const.sal
+//    ^^^ support.type.primitive.sal
+//        ^^^^^^^ variable.other.constant.sal
+//                  ^^^^ constant.numeric.sal
+
+trait Damageable : Transform, Named {
+// <----- storage.type.trait.sal
+//    ^^^^^^^^^^ entity.name.type.trait.sal
+//                 ^^^^^^^^^ entity.other.inherited-class.sal
+//                            ^^^^^ entity.other.inherited-class.sal
+    async ?Damageable!LoadError find(u32 id);
+//  ^^^^^ storage.modifier.sal
+//        ^ keyword.operator.optional.sal
+//                   ^ keyword.operator.error-union.sal
+//                    ^^^^^^^^^ entity.name.type.error.sal
+//                              ^^^^ entity.name.function.sal
+    []u8 load(string path, keep Visitor v);
+//  ^^ punctuation.definition.slice.sal
+//    ^^ support.type.primitive.sal
+//            ^^^^^^ support.type.primitive.sal
+//                         ^^^^ storage.modifier.sal
+}
+
+impl Damageable for Player {
+// <---- storage.type.impl.sal
+//   ^^^^^^^^^^ entity.name.type.trait.sal
+//              ^^^ keyword.other.for.sal
+//                  ^^^^^^ entity.name.type.sal
+    health = field health;
+//  ^^^^^^ entity.name.function.sal
+//           ^^^^^ keyword.other.field.sal
+}

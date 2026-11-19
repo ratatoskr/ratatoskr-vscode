@@ -1,0 +1,15 @@
+// SYNTAX TEST "source.sal" "wraith signatures"
+
+struct Player {
+    [Sig("48 8B ?? 05", Rip, Offset(3)), Thiscall] u32 attack(u32 times);
+//   ^^^ meta.attribute.sal meta.signature.wraith entity.other.attribute-name.sal
+//        ^^ constant.numeric.hex.wraith
+//              ^^ constant.character.wildcard.wraith
+//                      ^^^ support.constant.step.wraith
+//                           ^^^^^^ support.function.step.wraith
+//                                  ^ constant.numeric.sal
+//                                       ^^^^^^^^ entity.other.attribute-name.convention.sal
+    [wraith.VirtualTable("zz")] u32 x;
+//   ^^^^^^ entity.name.namespace.sal
+//                        ^^ invalid.illegal.signature.wraith
+}

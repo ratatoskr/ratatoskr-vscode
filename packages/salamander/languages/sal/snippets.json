@@ -1,0 +1,108 @@
+{
+  "struct": {
+    "prefix": "struct",
+    "description": "A struct with a size and a field",
+    "body": [
+      "[Size(${1:0x10})]",
+      "struct ${2:Name} {",
+      "\t[${3:0x0}] ${4:u32} ${5:field};$0",
+      "}"
+    ]
+  },
+  "struct with base": {
+    "prefix": "structb",
+    "description": "A struct that starts with another one",
+    "body": [
+      "struct ${1:Name} : ${2:Base} {",
+      "\t$0",
+      "}"
+    ]
+  },
+  "union": {
+    "prefix": "union",
+    "description": "A union, every field at 0",
+    "body": [
+      "union ${1:Name} {",
+      "\t${2:i32} ${3:int};",
+      "\t${4:f32} ${5:float};$0",
+      "}"
+    ]
+  },
+  "enum": {
+    "prefix": "enum",
+    "description": "An enum. Values count up from the one before",
+    "body": [
+      "enum ${1:Name} : ${2:u8} { ${3:first} = ${4:0}, $0 }"
+    ]
+  },
+  "bitfield": {
+    "prefix": "bitfield",
+    "description": "A bitfield. Members follow on unless they have a [Bit(n)]",
+    "body": [
+      "bitfield ${1:Name} : ${2:u32} {",
+      "\tbool ${3:flag};",
+      "\t[Bit(${4:4})] u8 ${5:value} : ${6:4};$0",
+      "}"
+    ]
+  },
+  "error": {
+    "prefix": "error",
+    "description": "An error set, for results like `T!Name`",
+    "body": [
+      "error ${1:Name} { ${2:NotFound}, $0 }"
+    ]
+  },
+  "field": {
+    "prefix": "field",
+    "description": "A field at an offset",
+    "body": [
+      "[${1:0x0}] ${2:u32} ${3:name};"
+    ]
+  },
+  "trait": {
+    "prefix": "trait",
+    "description": "A trait, what objects of it can do",
+    "body": [
+      "trait ${1:Name} {",
+      "\t${2:void} ${3:method}(${4});$0",
+      "}"
+    ]
+  },
+  "async method": {
+    "prefix": "async",
+    "description": "A method that settles later",
+    "body": [
+      "async ${1:u32} ${2:name}(${3});"
+    ]
+  },
+  "impl": {
+    "prefix": "impl",
+    "description": "Where an existing struct does a trait",
+    "body": [
+      "impl ${1:Trait} for ${2:Struct} {",
+      "\t${3:name} = field ${4:field};$0",
+      "}"
+    ]
+  },
+  "virtual method": {
+    "prefix": "virtual",
+    "description": "A struct's method in a vtable slot. Takes `this` without listing it",
+    "body": [
+      "[Virtual(${1:0})] ${2:void} ${3:name}(${4});"
+    ]
+  },
+  "fn type": {
+    "prefix": "fn",
+    "description": "A named function type, for callbacks",
+    "body": [
+      "fn ${1:void} ${2:Name}(${3});"
+    ]
+  },
+  "const": {
+    "prefix": "const",
+    "description": "A constant",
+    "body": [
+      "const ${1:u32} ${2:name} = ${3:0};"
+    ]
+  }
+}

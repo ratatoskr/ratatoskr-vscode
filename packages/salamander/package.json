@@ -1,0 +1,63 @@
+{
+  "name": "salamander-schemas",
+  "displayName": "Salamander Language Support",
+  "description": "Highlighting and snippets for Salamander's .sal schemas",
+  "version": "0.0.0",
+  "publisher": "ratatoskr",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ratatoskr/ratatoskr-vscode",
+    "directory": "packages/salamander"
+  },
+  "homepage": "https://salamander.io",
+  "bugs": {
+    "url": "https://github.com/ratatoskr/ratatoskr-vscode/issues"
+  },
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets"
+  ],
+  "keywords": [
+    "salamander",
+    "sal",
+    "schema",
+    "interface",
+    "zig"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "salamander",
+        "aliases": [
+          "Salamander",
+          "sal"
+        ],
+        "extensions": [
+          ".sal"
+        ],
+        "configuration": "./languages/sal/language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "salamander",
+        "scopeName": "source.sal",
+        "path": "./languages/sal/sal.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "salamander",
+        "path": "./languages/sal/snippets.json"
+      }
+    ]
+  },
+  "scripts": {
+    "package": "vsce package --no-dependencies --out salamander.vsix",
+    "test": "node -e \"\""
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Wraith signatures in Salamander",
+  "scopeName": "source.sal.wraith",
+  "injectionSelector": "L:source.sal meta.attribute.sal",
+  "patterns": [
+    {
+      "include": "#sig"
+    }
+  ],
+  "repository": {
+    "sig": {
+      "name": "meta.signature.wraith",
+      "begin": "\\b(?:(wraith)(\\.))?(Sig|VirtualTable)\\s*(\\()",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.name.namespace.sal"
+        },
+        "2": {
+          "name": "punctuation.accessor.sal"
+        },
+        "3": {
+          "name": "entity.other.attribute-name.sal"
+        },
+        "4": {
+          "name": "punctuation.definition.parameters.begin.sal"
+        }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.parameters.end.sal"
+        }
+      },
+      "patterns": [
+        {
+          "name": "string.quoted.double.signature.wraith",
+          "begin": "\"",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.sal"
+            }
+          },
+          "end": "\"|$",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.sal"
+            }
+          },
+          "patterns": [
+            {
+              "match": "\\?\\??",
+              "name": "constant.character.wildcard.wraith"
+            },
+            {
+              "match": "\\b[0-9A-Fa-f]{2}\\b",
+              "name": "constant.numeric.hex.wraith"
+            },
+            {
+              "match": "[^\\s\\\"]+",
+              "name": "invalid.illegal.signature.wraith"
+            }
+          ]
+        },
+        {
+          "begin": "\\b(Offset|Module|Section)\\s*(\\()",
+          "beginCaptures": {
+            "1": {
+              "name": "support.function.step.wraith"
+            },
+            "2": {
+              "name": "punctuation.definition.parameters.begin.sal"
+            }
+          },
+          "end": "\\)",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.parameters.end.sal"
+            }
+          },
+          "patterns": [
+            {
+              "include": "source.sal#numbers"
+            },
+            {
+              "include": "source.sal#strings"
+            }
+          ]
+        },
+        {
+          "match": "\\b(?:Rip|Follow)\\b",
+          "name": "support.constant.step.wraith"
+        },
+        {
+          "match": "\\b[A-Za-z_]\\w*\\b",
+          "name": "invalid.illegal.unknown-step.wraith"
+        },
+        {
+          "include": "source.sal#punctuation"
+        }
+      ]
+    }
+  }
+}
