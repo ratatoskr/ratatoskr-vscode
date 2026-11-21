@@ -1,5 +1,10 @@
 # Ratatoskr for VS Code
 
+[![CI](https://img.shields.io/github/actions/workflow/status/ratatoskr/ratatoskr-vscode/main_ci.yml?branch=main&label=CI)](https://github.com/ratatoskr/ratatoskr-vscode/actions/workflows/main_ci.yml)
+[![License](https://img.shields.io/github/license/ratatoskr/ratatoskr-vscode)](https://github.com/ratatoskr/ratatoskr-vscode/blob/main/LICENSE)
+[![Salamander](https://vsmarketplacebadges.dev/version-short/ratatoskr.salamander-schemas.svg?label=Salamander)](https://marketplace.visualstudio.com/items?itemName=ratatoskr.salamander-schemas)
+[![Wraith](https://vsmarketplacebadges.dev/version-short/ratatoskr.wraith.svg?label=Wraith)](https://marketplace.visualstudio.com/items?itemName=ratatoskr.wraith)
+
 VS Code extensions for Ratatoskr, published from one repo.
 
 - [Salamander](packages/salamander): `.sal` schemas.
