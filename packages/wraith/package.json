@@ -2,7 +2,7 @@
   "name": "wraith",
   "displayName": "Wraith",
   "description": "Language support for Wraith files: tweaks, scripts, address lists and projects",
-  "version": "0.0.0",
+  "version": "0.0.3",
   "publisher": "ratatoskr",
   "icon": "images/icon.png",
   "license": "MIT",
