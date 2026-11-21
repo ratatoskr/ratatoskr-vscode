@@ -5,7 +5,7 @@ Language support for [Wraith](https://wraith.io)'s files, for modding Windows ga
 | File | You get |
 | --- | --- |
 | `.rwt` tweaks | Highlighting, with the asm, JS, Lua and schemas inside highlighted too, plus snippets |
-| `.sal` schemas | Highlighting and snippets, from the Salamander extension, which comes with this one. Plus `[Sig]` and `[VirtualTable]` |
+| `.sal` schemas | Highlighting and snippets, from the Salamander extension, which comes with this one. Plus `[Sig]`, `[Instance]` and `[VirtualTable]` |
 | `.rws.js` `.rws.lua` scripts | Opened as JavaScript or Lua. Lua ones get types |
 | Lua plugins | Types for `require("wraith")` and your schemas |
 | `wraith.json` | Checked against the [Wraith Hub](https://hub.wraith.io)'s schema as you type |

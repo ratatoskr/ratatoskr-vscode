@@ -1,5 +1,11 @@
 // SYNTAX TEST "source.sal" "wraith signatures"
 
+[Instance("48 8B 0D ?? ?? ?? ??", Rip)]
+//^^^^^^^ meta.attribute.sal meta.signature.wraith entity.other.attribute-name.sal
+//         ^^ constant.numeric.hex.wraith
+//                                ^^^ support.constant.step.wraith
+struct Game { u32 gold; }
+
 struct Player {
     [Sig("48 8B ?? 05", Rip, Offset(3)), Thiscall] u32 attack(u32 times);
 //   ^^^ meta.attribute.sal meta.signature.wraith entity.other.attribute-name.sal
