@@ -33,6 +33,10 @@ struct Player : Entity {
 //               ^ keyword.operator.pointer.sal
 //                 ^ - meta.attribute.sal
 //                    ^^^^^ variable.other.member.sal
+    [0x60] Item[count] items;
+//         ^^^^ entity.name.type.sal
+//              ^^^^^ variable.other.member.sal
+//                     ^^^^^ variable.other.member.sal
     ?Damageable owner;
 //  ^ keyword.operator.optional.sal
 //   ^^^^^^^^^^ entity.name.type.sal

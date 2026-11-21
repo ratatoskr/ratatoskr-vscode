@@ -352,7 +352,7 @@
       "name": "storage.modifier.sal"
     },
     "field": {
-      "comment": "A type then a name, like `u32 id;`, `Player*[4] party;`, `?Damageable owner;`, a bitfield's `Job job : 4;` or a field with its own bits, `u8 flags { ... }`.",
+      "comment": "A type then a name, like `u32 id;`, `Player*[4] party;`, `Item[count] items;`, `?Damageable owner;`, a bitfield's `Job job : 4;` or a field with its own bits, `u8 flags { ... }`.",
       "match": "((?:\\?|\\[\\s*\\]\\s*)*)\\b([A-Za-z_]\\w*)((?:\\s*(?:\\*|\\[\\s*[^\\]\\s]*\\s*\\]))*)(?:\\s*(!)\\s*([A-Za-z_]\\w*))?(?:\\s+|(?<=[*\\]])\\s*)([A-Za-z_]\\w*)\\s*(?=[;:{])",
       "captures": {
         "1": {
@@ -390,6 +390,11 @@
             },
             {
               "include": "#numbers"
+            },
+            {
+              "comment": "An array as long as another field, like `Item[count]`",
+              "match": "\\b[A-Za-z_]\\w*\\b",
+              "name": "variable.other.member.sal"
             }
           ]
         },
