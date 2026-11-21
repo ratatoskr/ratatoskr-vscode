@@ -4,6 +4,7 @@
   "description": "Language support for Wraith files: tweaks, scripts, address lists and projects",
   "version": "0.0.0",
   "publisher": "ratatoskr",
+  "icon": "images/icon.png",
   "license": "MIT",
   "repository": {
     "type": "git",
