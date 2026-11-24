@@ -109,3 +109,34 @@ impl Damageable for Player {
 //  ^^^^^^ entity.name.function.sal
 //           ^^^^^ keyword.other.field.sal
 }
+
+namespace Client.Game {
+// <--------- storage.type.namespace.sal
+//        ^^^^^^^^^^^ entity.name.namespace.sal
+    struct StdVector<T> { T* first; }
+//         ^^^^^^^^^ entity.name.type.struct.sal
+//                  ^ punctuation.definition.generic.begin.sal
+//                   ^ entity.name.type.parameter.sal
+    struct Bag : StdVector<Item> {
+//               ^^^^^^^^^ entity.other.inherited-class.sal
+        Scene.Node* node;
+//      ^^^^^ entity.name.type.sal
+//           ^ punctuation.accessor.sal
+//            ^^^^ entity.name.type.sal
+//                  ^^^^ variable.other.member.sal
+        StdVector<Item*> items;
+//      ^^^^^^^^^ entity.name.type.sal
+//               ^ punctuation.definition.generic.sal
+//                ^^^^ entity.name.type.sal
+//                    ^ keyword.operator.pointer.sal
+//                       ^^^^^ variable.other.member.sal
+        [Sig("90")] u32 find(Scene.Node* at);
+//                      ^^^^ entity.name.function.sal
+//                           ^^^^^ entity.name.type.sal
+//                                       ^^ variable.parameter.sal
+    }
+}
+
+use Client.Game;
+// <--- keyword.control.import.sal
+//  ^^^^^^^^^^^ entity.name.namespace.sal

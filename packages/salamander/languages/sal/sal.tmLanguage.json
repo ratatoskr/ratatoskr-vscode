@@ -16,6 +16,9 @@
       "include": "#use"
     },
     {
+      "include": "#namespace"
+    },
+    {
       "include": "#enum"
     },
     {
@@ -143,7 +146,7 @@
       ]
     },
     "use": {
-      "match": "\\b(use)\\s+([A-Za-z_]\\w*)",
+      "match": "\\b(use)\\s+([A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*)",
       "captures": {
         "1": {
           "name": "keyword.control.import.sal"
@@ -207,7 +210,7 @@
       ]
     },
     "trait": {
-      "match": "\\b(trait)\\s+([A-Za-z_]\\w*)(?:\\s*(:)\\s*([A-Za-z_]\\w*(?:\\s*,\\s*[A-Za-z_]\\w*)*))?",
+      "match": "\\b(trait)\\s+([A-Za-z_]\\w*)(?:\\s*(:)\\s*([A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*(?:\\s*,\\s*[A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*)*))?",
       "captures": {
         "1": {
           "name": "storage.type.trait.sal"
@@ -221,7 +224,7 @@
         "4": {
           "patterns": [
             {
-              "match": "[A-Za-z_]\\w*",
+              "match": "[A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*",
               "name": "entity.other.inherited-class.sal"
             },
             {
@@ -233,7 +236,7 @@
       }
     },
     "impl": {
-      "match": "\\b(impl)\\s+([A-Za-z_]\\w*)\\s+(for)\\s+([A-Za-z_]\\w*)",
+      "match": "\\b(impl)\\s+([A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*)\\s+(for)\\s+([A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*(?:\\s*<[^{;]*>)?)",
       "captures": {
         "1": {
           "name": "storage.type.impl.sal"
@@ -250,7 +253,7 @@
       }
     },
     "type-declaration": {
-      "match": "\\b(struct|union|bitfield|opaque)\\s+([A-Za-z_]\\w*)(?:\\s*(:)\\s*([A-Za-z_]\\w*))?",
+      "match": "\\b(struct|union|bitfield|opaque)\\s+([A-Za-z_]\\w*)(?:\\s*(<)([^>]*)(>))?(?:\\s*(:)\\s*([A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*(?:\\s*<[^{]*>)?))?",
       "captures": {
         "1": {
           "name": "storage.type.$1.sal"
@@ -259,15 +262,45 @@
           "name": "entity.name.type.$1.sal"
         },
         "3": {
-          "name": "punctuation.separator.colon.sal"
+          "name": "punctuation.definition.generic.begin.sal"
         },
         "4": {
+          "patterns": [
+            {
+              "match": "[A-Za-z_]\\w*",
+              "name": "entity.name.type.parameter.sal"
+            },
+            {
+              "match": ",",
+              "name": "punctuation.separator.comma.sal"
+            }
+          ]
+        },
+        "5": {
+          "name": "punctuation.definition.generic.end.sal"
+        },
+        "6": {
+          "name": "punctuation.separator.colon.sal"
+        },
+        "7": {
           "patterns": [
             {
               "include": "#primitive"
             },
             {
-              "match": ".+",
+              "match": "[<>]",
+              "name": "punctuation.definition.generic.sal"
+            },
+            {
+              "match": "\\.",
+              "name": "punctuation.accessor.sal"
+            },
+            {
+              "match": "\\*",
+              "name": "keyword.operator.pointer.sal"
+            },
+            {
+              "match": "[A-Za-z_]\\w*",
               "name": "entity.other.inherited-class.sal"
             }
           ]
@@ -275,7 +308,7 @@
       }
     },
     "const": {
-      "match": "\\b(const)\\s+((?:\\?|\\[\\s*\\]\\s*)*)\\b([A-Za-z_]\\w*)((?:\\s*(?:\\*|\\[\\s*[^\\]\\s]*\\s*\\]))*)(?:\\s*(!)\\s*([A-Za-z_]\\w*))?\\s+([A-Za-z_]\\w*)",
+      "match": "\\b(const)\\s+((?:\\?|\\[\\s*\\]\\s*)*)\\b([A-Za-z_]\\w*(?:\\s*\\.\\s*[A-Za-z_]\\w*)*(?:\\s*<[^;{}()]*>)?)((?:\\s*(?:\\*|\\[\\s*[^\\]\\s]*\\s*\\]))*)(?:\\s*(!)\\s*([A-Za-z_]\\w*))?\\s+([A-Za-z_]\\w*)",
       "captures": {
         "1": {
           "name": "storage.modifier.const.sal"
@@ -298,7 +331,26 @@
               "include": "#primitive"
             },
             {
-              "match": ".+",
+              "match": "[<>]",
+              "name": "punctuation.definition.generic.sal"
+            },
+            {
+              "match": "\\.",
+              "name": "punctuation.accessor.sal"
+            },
+            {
+              "match": "\\*",
+              "name": "keyword.operator.pointer.sal"
+            },
+            {
+              "match": "[\\[\\]]",
+              "name": "punctuation.definition.array.sal"
+            },
+            {
+              "include": "#numbers"
+            },
+            {
+              "match": "[A-Za-z_]\\w*",
               "name": "entity.name.type.sal"
             }
           ]
@@ -353,7 +405,7 @@
     },
     "field": {
       "comment": "A type then a name, like `u32 id;`, `Player*[4] party;`, `Item[count] items;`, `?Damageable owner;`, a bitfield's `Job job : 4;` or a field with its own bits, `u8 flags { ... }`.",
-      "match": "((?:\\?|\\[\\s*\\]\\s*)*)\\b([A-Za-z_]\\w*)((?:\\s*(?:\\*|\\[\\s*[^\\]\\s]*\\s*\\]))*)(?:\\s*(!)\\s*([A-Za-z_]\\w*))?(?:\\s+|(?<=[*\\]])\\s*)([A-Za-z_]\\w*)\\s*(?=[;:{])",
+      "match": "((?:\\?|\\[\\s*\\]\\s*)*)\\b([A-Za-z_]\\w*(?:\\s*\\.\\s*[A-Za-z_]\\w*)*(?:\\s*<[^;{}()]*>)?)((?:\\s*(?:\\*|\\[\\s*[^\\]\\s]*\\s*\\]))*)(?:\\s*(!)\\s*([A-Za-z_]\\w*))?(?:\\s+|(?<=[*\\]])\\s*)([A-Za-z_]\\w*)\\s*(?=[;:{])",
       "captures": {
         "1": {
           "patterns": [
@@ -373,7 +425,26 @@
               "include": "#primitive"
             },
             {
-              "match": ".+",
+              "match": "[<>]",
+              "name": "punctuation.definition.generic.sal"
+            },
+            {
+              "match": "\\.",
+              "name": "punctuation.accessor.sal"
+            },
+            {
+              "match": "\\*",
+              "name": "keyword.operator.pointer.sal"
+            },
+            {
+              "match": "[\\[\\]]",
+              "name": "punctuation.definition.array.sal"
+            },
+            {
+              "include": "#numbers"
+            },
+            {
+              "match": "[A-Za-z_]\\w*",
               "name": "entity.name.type.sal"
             }
           ]
@@ -411,13 +482,10 @@
     },
     "method": {
       "comment": "A method or function, like `bool attack(Player* target, f32 amount);`, or a named fn type, `fn bool Visitor(u32 n);`.",
-      "begin": "(?:\\b(fn)\\s+)?((?:\\?|\\[\\s*\\]\\s*)*)\\b([A-Za-z_]\\w*)((?:\\s*(?:\\*|\\[\\s*[^\\]\\s]*\\s*\\]))*)(?:\\s*(!)\\s*([A-Za-z_]\\w*))?(?:\\s+|(?<=[*\\]])\\s*)([A-Za-z_]\\w*)\\s*(\\()",
+      "begin": "(?:\\b(fn)\\s+)?((?:\\?|\\[\\s*\\]\\s*)*)\\b([A-Za-z_]\\w*(?:\\s*\\.\\s*[A-Za-z_]\\w*)*(?:\\s*<[^;{}()]*>)?)((?:\\s*(?:\\*|\\[\\s*[^\\]\\s]*\\s*\\]))*)(?:\\s*(!)\\s*([A-Za-z_]\\w*))?(?:\\s+|(?<=[*\\]])\\s*)([A-Za-z_]\\w*)\\s*(\\()",
       "beginCaptures": {
         "1": {
           "name": "storage.type.function.sal"
-        },
-        "8": {
-          "name": "punctuation.definition.parameters.begin.sal"
         },
         "2": {
           "patterns": [
@@ -437,7 +505,26 @@
               "include": "#primitive"
             },
             {
-              "match": ".+",
+              "match": "[<>]",
+              "name": "punctuation.definition.generic.sal"
+            },
+            {
+              "match": "\\.",
+              "name": "punctuation.accessor.sal"
+            },
+            {
+              "match": "\\*",
+              "name": "keyword.operator.pointer.sal"
+            },
+            {
+              "match": "[\\[\\]]",
+              "name": "punctuation.definition.array.sal"
+            },
+            {
+              "include": "#numbers"
+            },
+            {
+              "match": "[A-Za-z_]\\w*",
               "name": "entity.name.type.sal"
             }
           ]
@@ -465,6 +552,9 @@
         },
         "7": {
           "name": "entity.name.function.sal"
+        },
+        "8": {
+          "name": "punctuation.definition.parameters.begin.sal"
         }
       },
       "end": "\\)",
@@ -485,7 +575,7 @@
           "name": "storage.type.function.sal"
         },
         {
-          "match": "((?:\\?|\\[\\s*\\]\\s*)*)\\b([A-Za-z_]\\w*)((?:\\s*(?:\\*|\\[\\s*[^\\]\\s]*\\s*\\]))*)(?:\\s*(!)\\s*([A-Za-z_]\\w*))?(?:(?:\\s+|(?<=[*\\]])\\s*)([A-Za-z_]\\w*))?\\s*(?=[,)])",
+          "match": "((?:\\?|\\[\\s*\\]\\s*)*)\\b([A-Za-z_]\\w*(?:\\s*\\.\\s*[A-Za-z_]\\w*)*(?:\\s*<[^;{}()]*>)?)((?:\\s*(?:\\*|\\[\\s*[^\\]\\s]*\\s*\\]))*)(?:\\s*(!)\\s*([A-Za-z_]\\w*))?(?:(?:\\s+|(?<=[*\\]])\\s*)([A-Za-z_]\\w*))?\\s*(?=[,)])",
           "captures": {
             "1": {
               "patterns": [
@@ -505,7 +595,26 @@
                   "include": "#primitive"
                 },
                 {
-                  "match": ".+",
+                  "match": "[<>]",
+                  "name": "punctuation.definition.generic.sal"
+                },
+                {
+                  "match": "\\.",
+                  "name": "punctuation.accessor.sal"
+                },
+                {
+                  "match": "\\*",
+                  "name": "keyword.operator.pointer.sal"
+                },
+                {
+                  "match": "[\\[\\]]",
+                  "name": "punctuation.definition.array.sal"
+                },
+                {
+                  "include": "#numbers"
+                },
+                {
+                  "match": "[A-Za-z_]\\w*",
                   "name": "entity.name.type.sal"
                 }
               ]
@@ -617,6 +726,17 @@
           "name": "keyword.operator.error-union.sal"
         }
       ]
+    },
+    "namespace": {
+      "match": "\\b(namespace)\\s+([A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*)",
+      "captures": {
+        "1": {
+          "name": "storage.type.namespace.sal"
+        },
+        "2": {
+          "name": "entity.name.namespace.sal"
+        }
+      }
     }
   }
 }
