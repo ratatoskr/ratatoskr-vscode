@@ -33,10 +33,9 @@ function pointerSize(manifest) {
     return Array.isArray(arches) && arches.length === 1 && arches[0] === "x86" ? 4 : 8;
 }
 
-/** `wraith sdk lua types` args. Scripts get the API as globals too. Wraith finds the schemas folder itself. */
-function typesArgs({ kind, pointerSize: size = 8 }) {
+/** `wraith sdk lua types` args. Scripts and plugins get the same globals now. Wraith finds the schemas folder itself. */
+function typesArgs({ pointerSize: size = 8 }) {
     const args = ["sdk", "lua", "types"];
-    if (kind === "scripts") args.push("--globals");
     if (size === 4) args.push("--pointer-size", "4");
     return args;
 }

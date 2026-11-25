@@ -29,7 +29,7 @@ test("32-bit only plugins get 4-byte pointers", () => {
 test("types args", () => {
     assert.deepEqual(typesArgs({ kind: "plugin" }), ["sdk", "lua", "types"]);
     assert.deepEqual(typesArgs({ kind: "plugin", pointerSize: 4 }), ["sdk", "lua", "types", "--pointer-size", "4"]);
-    assert.deepEqual(typesArgs({ kind: "scripts" }), ["sdk", "lua", "types", "--globals"]);
+    assert.deepEqual(typesArgs({ kind: "scripts" }), ["sdk", "lua", "types"]);
 });
 
 test("wraith is looked for in order", () => {
